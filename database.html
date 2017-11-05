@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=`, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+
+<body>
+  <section id="input">
+    <form>
+      <input id="id" type="text" placeholder="id">
+      <input id="name" type="text" placeholder="name">
+      <input id="add" type="button" value="Add">
+    </form>
+  </section>
+  <section id="users">
+  </section>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+  <script src="https://unpkg.com/jquery"></script>
+  <script>
+    // http://192.168.10.225/database.html
+    var config = {
+      apiKey: `AIzaSyAfUBCZnIgbXs9OHq7SBwv4ZqjDMB8ETNQ`,
+      authDomain: `mini-project-aris.firebaseapp.com`,
+      projectId: `mini-project-aris`,
+    };
+    firebase.initializeApp(config);
+    const db = firebase.firestore();
+
+    $(`#add`).on(`click`, e => {
+      e.preventDefault();
+      const id = $(`#id`).val();
+      const data = {
+        name: $(`#name`).val(),
+      }
+
+      db.collection(`user`).doc(id).set(data)
+        .catch(console.error);
+    })
+
+    db.collection(`user`)
+      .onSnapshot(snap => {
+        snap.docChanges.forEach(change => {
+          if (change.type === `added`)
+            $(`#users`).append($(`<div>${change.doc.data().name}</div>`));
+
+        })
+      })
+
+  </script>
+</body>
